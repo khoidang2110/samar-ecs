@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  static-site:
+    image: khoidang2110/samar:latest
+    container_name: static-site
+    ports:
+      - "8006:80"
+    restart: always

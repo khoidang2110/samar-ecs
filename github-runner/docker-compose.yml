@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  runner-andy-blog-be:
+    image: myoung34/github-runner:latest
+    container_name: runner-andy-blog-be
+    restart: unless-stopped
+    environment:
+      - REPO_URL=https://github.com/khoidang2110/andy_blog_be
+      - RUNNER_TOKEN=${ANDY_BLOG_TOKEN}
+      - RUNNER_NAME=vps-andy-blog-be
+      - RUNNER_WORKDIR=/tmp/runner/work
+      - LABELS=self-hosted,linux,x64,docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./cache/andy-blog-be:/tmp/runner
+      - /home/khoi/.docker:/root/.docker
+
+  runner-devdocs:
+    image: myoung34/github-runner:latest
+    container_name: runner-devdocs
+    restart: unless-stopped
+    environment:
+      - REPO_URL=https://github.com/khoidang2110/devdocs
+      - RUNNER_TOKEN=${DEVDOCS_TOKEN}
+      - RUNNER_NAME=vps-devdocs
+      - RUNNER_WORKDIR=/tmp/runner/work
+      - LABELS=self-hosted,linux,x64,docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./cache/devdocs:/tmp/runner
+      - /home/khoi/.docker:/root/.docker
+  runner-samar:
+    image: myoung34/github-runner:latest
+    container_name: runner-samar
+    restart: unless-stopped
+    environment:
+      - REPO_URL=https://github.com/khoidang2110/samar-cicd2
+      - RUNNER_TOKEN=${SAMAR_TOKEN}
+      - RUNNER_NAME=vps-samar
+      - RUNNER_WORKDIR=/tmp/runner/work
+      - LABELS=self-hosted,linux,x64,docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./cache/samar:/tmp/runner
+      - /home/khoi/.docker:/root/.docker  
