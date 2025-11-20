@@ -36,7 +36,7 @@ jobs:
 
       - name: Build and push to ECR
         run: |
-          IMAGE_URI=${{ secrets.AWS_ECR_REGISTRY }}/${{ secrets.ECR_REPO_NAME }}
+          IMAGE_URI=906034468113.dkr.ecr.ap-southeast-2.amazonaws.com/khoidang2110/samar
           
           docker build \
             -t $IMAGE_URI:latest \
@@ -61,8 +61,8 @@ jobs:
       - name: Deploy new image to ECS
         run: |
           aws ecs update-service \
-            --cluster samar-cluster \
-            --service samar-service \
+            --cluster khoi-ecs-cluster \
+            --service khoi-service \
             --force-new-deployment
 
       - name: Confirm deployment
