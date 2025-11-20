@@ -1,75 +1,48 @@
-# ECS Terraform Configuration
+# ECS Terraform
 
-Infrastructure as Code để triển khai ECS Fargate với Application Load Balancer.
-
-## Resources được tạo
-
-- **ECS Cluster**: khoi-ecs-cluster
-- **ECS Service**: khoi-service (Fargate)
-- **Task Definition**: khoi-task
-- **Application Load Balancer**: khoi-alb
-- **Target Group**: Route traffic đến ECS tasks
-- **Security Groups**: ALB SG + ECS Tasks SG
-- **IAM Roles**: Task Execution Role + Task Role
-- **CloudWatch Log Group**: /ecs/khoi-task
-- **Auto Scaling**: CPU và Memory based (1-10 tasks)
+Tạo AWS ECS Fargate infrastructure.
 
 ## Yêu cầu
 
-- VPC `khoi-vpc` đã được tạo (từ folder `terraform/vpc`)
+- VPC `khoi-vpc` đã tạo (chạy `terraform/vpc` trước)
 - Terraform >= 1.0
 - AWS CLI configured
 
-## Sử dụng
+## Cách dùng
 
-### 1. Cập nhật terraform.tfvars
+### 1. Sửa ECR URL
 
+File `terraform.tfvars`:
 ```hcl
-vpc_name           = "khoi-vpc"  # VPC name đã tạo
-ecr_repository_url = "YOUR_ACCOUNT.dkr.ecr.ap-southeast-2.amazonaws.com/samar-repo"
+ecr_repository_url = "YOUR_ACCOUNT.dkr.ecr.ap-southeast-2.amazonaws.com/YOUR_REPO"
 ```
 
-### 2. Initialize
+### 2. Deploy
 
 ```bash
 cd terraform/ecs
 terraform init
-```
-
-### 3. Plan
-
-```bash
-terraform plan
-```
-
-### 4. Apply
-
-```bash
 terraform apply
 ```
 
-### 5. Get ALB URL
+### 3. Lấy thông tin
 
 ```bash
-terraform output alb_dns_name
+terraform output alb_dns_name                     # URL web
+terraform output github_actions_access_key_id     # AWS Key cho GitHub
+terraform output github_actions_secret_access_key # AWS Secret cho GitHub
 ```
 
-## Cấu hình
+## Resources tạo ra
 
-### Task size
-```hcl
-task_cpu    = "512"   # 0.5 vCPU
-task_memory = "1024"  # 1GB RAM
-```
-
-### Số lượng tasks
-```hcl
-desired_count = 2
-```
+- ECS Cluster: `khoi-ecs-cluster`
+- ECS Service: `khoi-service` (2 tasks, 0.5 vCPU, 1GB RAM)
+- ALB: `khoi-alb`
+- IAM User: `github-actions-ecs-deployer` (dùng cho CI/CD)
+- Auto Scaling: min 1, max 10 tasks
+- CloudWatch Logs: `/ecs/khoi-task`
 
 ## Update Service
-
-Sau khi push image mới:
 
 ```bash
 aws ecs update-service \
@@ -78,8 +51,23 @@ aws ecs update-service \
   --force-new-deployment
 ```
 
-## Destroy
+## Xem Logs
+
+```bash
+aws logs tail /ecs/khoi-task --follow
+```
+
+## Xóa
 
 ```bash
 terraform destroy
+```
+
+## Tùy chỉnh
+
+File `terraform.tfvars`:
+```hcl
+task_cpu    = "1024"  # 1 vCPU
+task_memory = "2048"  # 2GB RAM
+desired_count = 3     # 3 tasks
 ```
