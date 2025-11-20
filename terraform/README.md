@@ -311,38 +311,6 @@ aws ecs describe-services \
 - Đợi ít nhất 5-10 phút để metrics thu thập
 - Kiểm tra CloudWatch metrics
 
-## 💰 Chi phí ước tính
-
-**VPC:**
-- NAT Gateway: ~$32/tháng ($0.045/giờ)
-- Data processing: $0.045/GB
-
-**ECS Fargate:**
-- 2 tasks × 0.5 vCPU × $0.04056/giờ = ~$58/tháng
-- 2 tasks × 1GB RAM × $0.004445/giờ = ~$6.4/tháng
-
-**Load Balancer:**
-- ALB: ~$16/tháng ($0.0225/giờ)
-- Data processing: $0.008/GB
-
-**CloudWatch:**
-- Logs: $0.50/GB ingested
-- First 5GB free
-
-**Tổng ước tính: ~$112-130/tháng**
-
-### Tối ưu chi phí Development
-
-Giảm xuống ~$40-50/tháng:
-```hcl
-# terraform.tfvars
-desired_count = 1      # Chỉ chạy 1 task
-task_cpu    = "256"    # 0.25 vCPU
-task_memory = "512"    # 512MB RAM
-```
-
-Hoặc xóa NAT Gateway nếu không cần (đã không dùng private subnet).
-
 ## 🗑️ Xóa Infrastructure
 
 **Cảnh báo:** Lệnh này sẽ xóa toàn bộ infrastructure!
